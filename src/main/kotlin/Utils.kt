@@ -20,7 +20,8 @@ object Utils {
 
     private fun createCells(row: Row){
         for (i in 0..Styles.COLUMN_COUNT){
-            row.createCell(i)
+            val cell = row.createCell(i)
+            cell.cellStyle = wb.createCellStyle()
         }
     }
 
