@@ -1,6 +1,6 @@
 abstract class Trouble(
-    private var rate: Int,
-    protected var dangerScore: Int = 0
+    var rate: Int,
+    var dangerScore: Int = 0
 ):TextCard()
 {
     override fun setLetterIndex() {

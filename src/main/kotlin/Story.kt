@@ -1,13 +1,12 @@
 abstract class Story(
-    private var num: Int = 0,
-    letterIndex: String = "",
-    private var price: Int = 0,
-    private var analystEstimate: Int = 0,
-    private var devEstimate: Int = 0,
-    private var testEstimate: Int = 0,
-    protected var baseComplexity: Int = getBaseComplexity(),
-    protected var title: String = ""
-):Card(letterIndex){
+    var num: Int = 0,
+    var price: Int = 0,
+    var analystEstimate: Int = 0,
+    var devEstimate: Int = 0,
+    var testEstimate: Int = 0,
+    var baseComplexity: Int = getBaseComplexity(),
+    var title: String = ""
+):Card(){
 
     fun setPrice(){
         val mapping = Data.BaseComplexityRange.RANGE.zip(Data.PriceRange.RANGE).toMap()
