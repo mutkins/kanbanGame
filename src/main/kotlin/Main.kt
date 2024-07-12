@@ -15,7 +15,7 @@ fun main() {
     CardCreator.TroubleCreator.EasyTrouble.createCard(40)
     CardCreator.TroubleCreator.SeriousTrouble.createCard(40)
     CardCreator.TroubleCreator.AwfulTrouble.createCard(40)
-    CardCreator.ModificationCreator.Modification.createCard(15)
+    CardCreator.ModificationCreator.Modific.createCard(15)
 
 //    val b = Card.CardHolder.StoriesHolder.ExpediteStory.stories
 
@@ -38,7 +38,9 @@ fun main() {
     var sheet = wb.createSheet("TT")
     Utils.createRows(sheet)
     Utils.setColumnsWidth(sheet)
-    val r = ExcelCard.ExcelStory(Card.CardHolder.StoriesHolder.UsualStory.stories[0] as Story)
+    val r = ExcelCard.ExcelStory.ExcelExpediteStory(Card.CardHolder.StoriesHolder.ExpediteStory.stories[0])
+    val v = ExcelCard.ExcelStory.ExcelUsualStory(Card.CardHolder.StoriesHolder.UsualStory.stories[0])
+    val f = ExcelCard.ExcelStory.ExcelOptimizationStory(Card.CardHolder.StoriesHolder.OptimizationStory.stories[0])
     r.setCoordinates(0,0)
     r.writeLeftBarValue(sheet)
     r.writeRightBarValue(sheet)

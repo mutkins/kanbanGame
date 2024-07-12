@@ -98,5 +98,46 @@ abstract class Story(
             testEstimate = (devEstimate/2.5 + (0..4).random()).toInt()
         }
     }
+
+    abstract class StoryBuilder<T : StoryBuilder<T>>(i){
+        val story = UsualStory(i)
+        fun setPrice(){
+            val mapping = Data.BaseComplexityRange.RANGE.zip(Data.PriceRange.RANGE).toMap()
+            story.price = mapping[story.baseComplexity]?: 0
+            return self()
+        }
+
+        fun setEstimate(){
+            val estimate = Estimate(story.baseComplexity)
+            story.devEstimate = estimate.devEstimate
+            story.analystEstimate = estimate.analystEstimate
+            story.testEstimate = estimate.testEstimate
+            return self()
+        }
+        abstract fun self()
+
+        class UsualStoryBuilder(i: Int): StoryBuilder<UsualStoryBuilder>(i){
+
+            override fun self(): UsualStoryBuilder {
+                return this
+            }
+
+            fun setLetterIndex(): UsualStoryBuilder {
+                story.letterIndex = Data.LetterIndexMap.MAP["UsualStory"] ?: ""
+                return this
+            }
+
+            fun setTitle(): UsualStoryBuilder {
+                story.title = "Стандартная история"
+                return this
+            }
+
+            fun build(): UsualStory{
+                return story
+            }
+
+
+        }
+    }
 }
 

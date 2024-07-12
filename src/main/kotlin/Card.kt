@@ -11,17 +11,50 @@ abstract class Card(var letterIndex: String = ""){
 
 
     abstract class CardHolder{
-        var stories: MutableList<Card> = mutableListOf()
-        fun addCardList(list: MutableList<Card>) {
-            stories = list
-        }
+
         data object StoriesHolder{
-            data object UsualStory: CardHolder()
-            data object FixedDateStory: CardHolder()
-            data object OptimizationStory: CardHolder()
-            data object ExpediteStory: CardHolder()
+            data object UsualStory: CardHolder() {
+                var stories: MutableList<Story.UsualStory> = mutableListOf()
+                fun addCardList(list: MutableList<Story.UsualStory>) {
+                    stories = list
+                }
+
+                fun placeCardOnSheet(){
+                    for (story in stories){
+                        ExcelCard.ExcelStory.ExcelUsualStory(story)
+                    }
+
+                }
             }
-        data object Trouble: CardHolder()
-        data object Modification: CardHolder()
+            data object FixedDateStory: CardHolder() {
+                var stories: MutableList<Story.FixedDateStory> = mutableListOf()
+                fun addCardList(list: MutableList<Story.FixedDateStory>) {
+                    stories = list
+                }
+            }
+            data object OptimizationStory: CardHolder() {
+                var stories: MutableList<Story.OptimizationStory> = mutableListOf()
+                fun addCardList(list: MutableList<Story.OptimizationStory>) {
+                    stories = list
+                }
+            }
+            data object ExpediteStory: CardHolder() {
+                var stories: MutableList<Story.ExpediteStory> = mutableListOf()
+                fun addCardList(list: MutableList<Story.ExpediteStory>) {
+                    stories = list
+                }
+            }
+            }
+        data object TroubleO: CardHolder(){
+             var stories: MutableList<Trouble> = mutableListOf()
+            fun addCardList(list: MutableList<Trouble>) {
+                stories = list
+            }}
+        data object ModificationO: CardHolder(){
+            var stories: MutableList<Modification> = mutableListOf()
+            fun addCardList(list: MutableList<Modification>) {
+                stories = list
+            }
+        }
         }
     }

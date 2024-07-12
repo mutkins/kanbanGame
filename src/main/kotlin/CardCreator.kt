@@ -4,23 +4,30 @@ interface CardCreator {
     object StoryCreator {
         object Usual : CardCreator {
             override fun createCard(count: Int) {
-                val stories: MutableList<Card> = mutableListOf()
+                val stories: MutableList<Story.UsualStory> = mutableListOf()
                 for (i in 1..count) {
-                    val foo = Story.UsualStory(i)
-                    foo.setLetterIndex()
-                    foo.setEstimate()
-                    foo.setPrice()
-                    foo.setTitle()
+                    val foo = Story.StoryBuilder.UsualStoryBuilder(i)
+                        .setPrice()
+                        .setTitle()
+                        .setEstimate()
+                        .setLetterIndex()
+                        .build()
+
+//                    val foo = Story.UsualStory(i)
+//                    foo.setLetterIndex()
+//                    foo.setEstimate()
+//                    foo.setPrice()
+//                    foo.setTitle()
                     stories.add(foo)
                 }
-                Card.cardList.add(stories)
+//                Card.cardList.add(stories)
                 Card.CardHolder.StoriesHolder.UsualStory.addCardList(stories)
             }
         }
 
         object FixedDate : CardCreator {
             override fun createCard(count: Int) {
-                val stories: MutableList<Card> = mutableListOf()
+                val stories: MutableList<Story.FixedDateStory> = mutableListOf()
                 for (i in 1..count) {
                     try{
                     val foo = Story.FixedDateStory(i)
@@ -35,14 +42,14 @@ interface CardCreator {
                         break
                     }
                 }
-                Card.cardList.add(stories)
+//                Card.cardList.add(stories)
                 Card.CardHolder.StoriesHolder.FixedDateStory.addCardList(stories)
             }
         }
 
         object Optimization : CardCreator {
             override fun createCard(count: Int) {
-                val stories: MutableList<Card> = mutableListOf()
+                val stories: MutableList<Story.OptimizationStory> = mutableListOf()
                 for (i in 1..count) {
                     try{
                     val foo = Story.OptimizationStory(i)
@@ -57,14 +64,14 @@ interface CardCreator {
                         break
                     }
                 }
-                Card.cardList.add(stories)
+//                Card.cardList.add(stories)
                 Card.CardHolder.StoriesHolder.OptimizationStory.addCardList(stories)
             }
         }
 
         object Expedite : CardCreator {
             override fun createCard(count: Int) {
-                val stories: MutableList<Card> = mutableListOf()
+                val stories: MutableList<Story.ExpediteStory> = mutableListOf()
                 for (i in 1..count) {
                     try{
                     val foo = Story.ExpediteStory(i)
@@ -79,7 +86,7 @@ interface CardCreator {
                         break
                     }
                 }
-                Card.cardList.add(stories)
+//                Card.cardList.add(stories)
                 Card.CardHolder.StoriesHolder.ExpediteStory.addCardList(stories)
             }
         }
@@ -88,7 +95,7 @@ interface CardCreator {
     object TroubleCreator{
         object HarmlessTrouble : CardCreator {
             override fun createCard(count: Int) {
-                val troubles: MutableList<Card> = mutableListOf()
+                val troubles: MutableList<Trouble> = mutableListOf()
                 for (i in 1..count) {
                     try {
                         val foo = Trouble.HarmlessTrouble()
@@ -101,13 +108,13 @@ interface CardCreator {
                         break
                     }
                 }
-                Card.cardList.add(troubles)
-                Card.CardHolder.Trouble.addCardList(troubles)
+//                Card.cardList.add(troubles)
+                Card.CardHolder.TroubleO.addCardList(troubles)
             }
         }
         object EasyTrouble : CardCreator {
             override fun createCard(count: Int) {
-                val troubles: MutableList<Card> = mutableListOf()
+                val troubles: MutableList<Trouble> = mutableListOf()
                 for (i in 1..count) {
                     try{
                     val foo = Trouble.EasyTrouble()
@@ -120,13 +127,13 @@ interface CardCreator {
                     break
                 }
                 }
-                Card.cardList.add(troubles)
-                Card.CardHolder.Trouble.addCardList(troubles)
+//                Card.cardList.add(troubles)
+                Card.CardHolder.TroubleO.addCardList(troubles)
             }
         }
         object SeriousTrouble : CardCreator {
             override fun createCard(count: Int) {
-                val troubles: MutableList<Card> = mutableListOf()
+                val troubles: MutableList<Trouble> = mutableListOf()
                 for (i in 1..count) {
                     try{
                     val foo = Trouble.SeriousTrouble()
@@ -139,13 +146,13 @@ interface CardCreator {
                     break
                 }
                 }
-                Card.cardList.add(troubles)
-                Card.CardHolder.Trouble.addCardList(troubles)
+//                Card.cardList.add(troubles)
+                Card.CardHolder.TroubleO.addCardList(troubles)
             }
         }
         object AwfulTrouble : CardCreator {
             override fun createCard(count: Int) {
-                val troubles: MutableList<Card> = mutableListOf()
+                val troubles: MutableList<Trouble> = mutableListOf()
                 for (i in 1..count) {
                     try{
                     val foo = Trouble.AwfulTrouble()
@@ -158,15 +165,15 @@ interface CardCreator {
                     break
                 }
                 }
-                Card.cardList.add(troubles)
-                Card.CardHolder.Trouble.addCardList(troubles)
+//                Card.cardList.add(troubles)
+                Card.CardHolder.TroubleO.addCardList(troubles)
             }
         }
     }
     object ModificationCreator{
-        object Modification : CardCreator {
+        object Modific : CardCreator {
             override fun createCard(count: Int) {
-                val modifications: MutableList<Card> = mutableListOf()
+                val modifications: MutableList<Modification> = mutableListOf()
                 for (i in 1..count) {
                     try{
                         val foo = Modification()
@@ -178,8 +185,8 @@ interface CardCreator {
                         break
                     }
                 }
-                Card.cardList.add(modifications)
-                Card.CardHolder.Modification.addCardList(modifications)
+//                Card.cardList.add(modifications)
+                Card.CardHolder.ModificationO.addCardList(modifications)
             }
         }
     }

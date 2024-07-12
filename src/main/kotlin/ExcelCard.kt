@@ -2,6 +2,7 @@ import Utils.wb
 import org.apache.poi.ss.usermodel.*
 import org.apache.poi.ss.util.CellRangeAddress
 import org.apache.poi.xssf.usermodel.XSSFFont
+import org.openxmlformats.schemas.officeDocument.x2006.sharedTypes.STGuid
 
 
 abstract class ExcelCard(
@@ -12,27 +13,23 @@ abstract class ExcelCard(
     var leftBar: String = "",
     var title: String = "",
     var rightBar: String = "",
-    var letterIndex: String = ""
+    var letterIndex: String = "",
+    protected var backgroundColor: Short = Styles.DEFAULT_COLOR
 ) {
 
-    fun fillCard(sheet: Sheet){
+    fun placeCard(sheet: Sheet){
+
+    }
+
+    fun fillCard(sheet: Sheet) {
         for (rowNum in firstRow..lastRow){
             val row = sheet.getRow(rowNum)
             for (columnNum in firstColumn..lastColumn){
                 val cell = row.getCell(columnNum)
-
-                val color = when (letterIndex){
-                    "S" -> Styles.USUAL_STORY_COLOR
-                    "F" -> Styles.FIXED_STORY_COLOR
-                    "O" -> Styles.OPTIMIZATION_STORY_COLOR
-                    "E" -> Styles.EXPEDITE_STORY_COLOR
-                    else -> Styles.DEFAULT_COLOR
-                }
-                fillCell(cell, color)
+                fillCell(cell, backgroundColor)
             }
         }
     }
-
 
     fun writeOutlineBorder(sheet: Sheet){
         for (rowNum in firstRow..lastRow){
@@ -172,8 +169,27 @@ abstract class ExcelCard(
                 cell.cellStyle = style
             }
         }
-        class ExcelUsualStory(story: Story):ExcelStory(story){
+        class ExcelUsualStory(story: Story.UsualStory):ExcelStory(story as Story){
+            init {
+                backgroundColor = Styles.USUAL_STORY_COLOR
+            }
+        }
+        class ExcelFixedStory(story: Story.FixedDateStory):ExcelStory(story as Story){
+            init {
+                backgroundColor = Styles.FIXED_STORY_COLOR
+            }
+        }
 
+        class ExcelOptimizationStory(story: Story.OptimizationStory):ExcelStory(story as Story){
+            init {
+                backgroundColor = Styles.OPTIMIZATION_STORY_COLOR
+            }
+        }
+
+        class ExcelExpediteStory(story: Story.ExpediteStory):ExcelStory(story as Story){
+            init {
+                backgroundColor = Styles.EXPEDITE_STORY_COLOR
+            }
         }
     }
 
@@ -183,6 +199,7 @@ abstract class ExcelCard(
         constructor(card: TextCard): this(){
             textBar = card.text
         }
+
     }
 
     class ExcelTrouble(
@@ -192,10 +209,18 @@ abstract class ExcelCard(
             leftBar = "${card.letterIndex}${card.rate}"
             rightBar = "${card.dangerScore} угр."
         }
+        init {
+            backgroundColor = Styles.TROUBLE_COLOR
+        }
     }
 
     class ExcelModification(
-    ): ExcelTextCard(){}
+
+    ): ExcelTextCard(){
+        init {
+            backgroundColor = Styles.MODIFICATION_COLOR
+        }
+    }
 
 
 companion object{
