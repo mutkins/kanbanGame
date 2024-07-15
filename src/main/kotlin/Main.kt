@@ -35,6 +35,8 @@ fun main() {
 
 
 
+
+    val gf = Card.CardHolder.StoriesHolder.UsualStory
     var sheet = wb.createSheet("TT")
     Utils.createRows(sheet)
     Utils.setColumnsWidth(sheet)

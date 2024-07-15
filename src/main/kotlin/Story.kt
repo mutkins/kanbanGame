@@ -23,7 +23,7 @@ abstract class Story(
     abstract fun setTitle()
 
 
-    abstract class StoryWithDueDate(num: Int, protected var dueDay: Int = 0):Story(num){
+    abstract class StoryWithDueDate(num: Int, var dueDay: Int = 0):Story(num){
         abstract fun setDueDay()
     }
 
@@ -99,25 +99,25 @@ abstract class Story(
         }
     }
 
-    abstract class StoryBuilder<T : StoryBuilder<T>>(i){
-        val story = UsualStory(i)
-        fun setPrice(){
+    abstract class StoryBuilder<T : StoryBuilder<T, S>, S:Story>{
+        abstract val story:S
+        fun setPrice():T{
             val mapping = Data.BaseComplexityRange.RANGE.zip(Data.PriceRange.RANGE).toMap()
             story.price = mapping[story.baseComplexity]?: 0
             return self()
         }
 
-        fun setEstimate(){
+        fun setEstimate():T{
             val estimate = Estimate(story.baseComplexity)
             story.devEstimate = estimate.devEstimate
             story.analystEstimate = estimate.analystEstimate
             story.testEstimate = estimate.testEstimate
             return self()
         }
-        abstract fun self()
+        abstract fun self(): T
 
-        class UsualStoryBuilder(i: Int): StoryBuilder<UsualStoryBuilder>(i){
-
+        class UsualStoryBuilder(i: Int): StoryBuilder<UsualStoryBuilder, UsualStory>(){
+            override val story: UsualStory = Story.UsualStory(i)
             override fun self(): UsualStoryBuilder {
                 return this
             }
@@ -133,6 +133,33 @@ abstract class Story(
             }
 
             fun build(): UsualStory{
+                return story
+            }
+
+
+        }
+        class FixedDateStoryBuilder(i: Int): StoryBuilder<FixedDateStoryBuilder, FixedDateStory>(){
+            override val story: FixedDateStory = FixedDateStory(i)
+            override fun self(): FixedDateStoryBuilder {
+                return this
+            }
+
+            fun setLetterIndex(): FixedDateStoryBuilder {
+                story.letterIndex = Data.LetterIndexMap.MAP["UsualStory"] ?: ""
+                return this
+            }
+
+            fun setTitle() :FixedDateStoryBuilder {
+                story.title = "Крайний срок: $story.dueDay день"
+                return this
+            }
+
+            fun setDueDay(): FixedDateStoryBuilder{
+                story.dueDay = Data.DueDayRange.getNext()
+                return this
+            }
+
+            fun build(): FixedDateStory{
                 return story
             }
 

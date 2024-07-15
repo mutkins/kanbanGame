@@ -57,4 +57,221 @@ abstract class Card(var letterIndex: String = ""){
             }
         }
         }
+
+    abstract class Builder<B : Builder<B, C>, C:Card> {
+        abstract val card: C
+        abstract fun setLetterIndex(): B
+        abstract fun self(): B
+        abstract fun build(): C
+        abstract class TextCardBuilder<B: TextCardBuilder<B,C>, C:TextCard>: Builder<B,C>() {
+            abstract fun setText():B
+            abstract class TroubleBuilder<B: TroubleBuilder<B,C>, C: Trouble>: TextCardBuilder<B, C>(){
+                override fun setLetterIndex():B {
+                    card.letterIndex = Data.LetterIndexMap.MAP["Trouble"] ?: ""
+                    return self()
+                }
+
+                abstract fun setDangerScore():B
+                class HarmlessTroubleBuilder(): TroubleBuilder<HarmlessTroubleBuilder,Trouble.HarmlessTrouble>() {
+                    override val card: Trouble.HarmlessTrouble = Trouble.HarmlessTrouble()
+                    override fun setText():HarmlessTroubleBuilder {
+                        card.text = Data.HarmlessTroubleList.getNext()
+                        return this
+                    }
+
+                    override fun setDangerScore():HarmlessTroubleBuilder {
+                        card.dangerScore = Data.TroubleRange.Harmless.RANGE.random()
+                        return this
+                    }
+
+                    override fun self(): HarmlessTroubleBuilder {
+                        return this
+                    }
+
+                    override fun build(): Trouble.HarmlessTrouble{
+                        return card
+                    }
+                }
+
+                class EasyTroubleBuilder: TroubleBuilder<EasyTroubleBuilder,Trouble.EasyTrouble>() {
+                    override val card: Trouble.EasyTrouble = Trouble.EasyTrouble()
+                    override fun setText(): EasyTroubleBuilder{
+                        card.text = Data.HarmlessTroubleList.getNext()
+                        return this
+                    }
+
+                    override fun setDangerScore(): EasyTroubleBuilder {
+                        card.dangerScore = Data.TroubleRange.Easy.RANGE.random()
+                        return this
+                    }
+                    override fun self(): EasyTroubleBuilder {
+                        return this
+                    }
+
+                    override fun build(): Trouble.EasyTrouble{
+                        return card
+                    }
+
+                }
+
+                class SeriousTroubleBuilder: TroubleBuilder<SeriousTroubleBuilder,Trouble.SeriousTrouble>() {
+                    override val card: Trouble.SeriousTrouble = Trouble.SeriousTrouble()
+                    override fun setText(): SeriousTroubleBuilder{
+                        card.text = Data.HarmlessTroubleList.getNext()
+                        return this
+                    }
+
+                    override fun setDangerScore(): SeriousTroubleBuilder {
+                        card.dangerScore = Data.TroubleRange.Serious.RANGE.random()
+                        return this
+                    }
+                    override fun self(): SeriousTroubleBuilder {
+                        return this
+                    }
+
+                    override fun build(): Trouble.SeriousTrouble{
+                        return card
+                    }
+
+                }
+
+                class AwfulTroubleBuilder: TroubleBuilder<AwfulTroubleBuilder,Trouble.AwfulTrouble>() {
+                    override val card: Trouble.AwfulTrouble = Trouble.AwfulTrouble()
+                    override fun setText(): AwfulTroubleBuilder{
+                        card.text = Data.HarmlessTroubleList.getNext()
+                        return this
+                    }
+
+                    override fun setDangerScore(): AwfulTroubleBuilder {
+                        card.dangerScore = Data.TroubleRange.Harmless.RANGE.random()
+                        return this
+                    }
+                    override fun self(): AwfulTroubleBuilder {
+                        return this
+                    }
+
+                    override fun build(): Trouble.AwfulTrouble{
+                        return card
+                    }
+
+                }
+            }
+            class ModificationBuilder: TextCardBuilder<ModificationBuilder, Modification>(){
+                override val card: Modification = Modification()
+                override fun setLetterIndex(): ModificationBuilder {
+                    card.letterIndex = Data.LetterIndexMap.MAP["Modification"] ?: ""
+                    return this
+                }
+                override fun setText(): ModificationBuilder{
+                    card.text = Data.ModificationList.getNext()
+                    return this
+                }
+
+                override fun self(): ModificationBuilder {
+                    return this
+                }
+
+                override fun build(): Modification {
+                    return card
+                }
+            }
+
+        }
+        abstract class StoryBuilder<B: StoryBuilder<B,C>, C: Story>:Builder<B, C>(){
+
+            abstract fun setTitle(): B
+            fun setPrice(): B {
+                val mapping = Data.BaseComplexityRange.RANGE.zip(Data.PriceRange.RANGE).toMap()
+                card.price = mapping[card.baseComplexity]?: 0
+                return self()
+            }
+
+            fun setEstimate(): B {
+                val estimate = Story.Estimate(card.baseComplexity)
+                card.devEstimate = estimate.devEstimate
+                card.analystEstimate = estimate.analystEstimate
+                card.testEstimate = estimate.testEstimate
+                return self()
+            }
+
+            class UsualStoryBuilder(i: Int): StoryBuilder<UsualStoryBuilder, Story.UsualStory>(){
+                override val card: Story.UsualStory = Story.UsualStory(i)
+                override fun self(): UsualStoryBuilder {
+                    return this
+                }
+
+                override fun setLetterIndex(): UsualStoryBuilder {
+                    card.letterIndex = Data.LetterIndexMap.MAP["UsualStory"] ?: ""
+                    return this
+                }
+
+                override fun setTitle(): UsualStoryBuilder {
+                    card.title = "Стандартная история"
+                    return this
+                }
+
+                override fun build(): Story.UsualStory{
+                    return card
+                }
+
+
+            }
+            abstract class StoryWithDueDateBuilder<B: StoryWithDueDateBuilder<B,C>, C: Story.StoryWithDueDate>: StoryBuilder<B,C>(){
+                abstract fun setDueDay(): B
+                class FixedDateStoryBuilder(i: Int): StoryWithDueDateBuilder<FixedDateStoryBuilder, Story.FixedDateStory>(){
+                    override val card: Story.FixedDateStory = Story.FixedDateStory(i)
+                    override fun self(): FixedDateStoryBuilder {
+                        return this
+                    }
+
+                    override fun setLetterIndex(): FixedDateStoryBuilder {
+                        card.letterIndex = Data.LetterIndexMap.MAP["UsualStory"] ?: ""
+                        return this
+                    }
+
+                    override fun setTitle() :FixedDateStoryBuilder {
+                        card.title = "Крайний срок: $card.dueDay день"
+                        return this
+                    }
+
+                    override fun setDueDay(): FixedDateStoryBuilder{
+                        card.dueDay = Data.DueDayRange.getNext()
+                        return this
+                    }
+
+                    override fun build(): Story.FixedDateStory{
+                        return card
+                    }
+
+
+                }
+                class ExpediteStoryBuilder(i: Int): StoryWithDueDateBuilder<ExpediteStoryBuilder, Story.ExpediteStory>(){
+                    override val card: Story.ExpediteStory = Story.ExpediteStory(i)
+                    override fun setLetterIndex(): ExpediteStoryBuilder {
+                        card.letterIndex = Data.LetterIndexMap.MAP["ExpediteStory"] ?: ""
+                    }
+
+                    override fun setDueDay():ExpediteStoryBuilder {
+                        card.dueDay = (3..5).random()
+                        return this
+                    }
+                    override fun setTitle(): ExpediteStoryBuilder {
+                        card.title = "Срок: $card.dueDay дня"
+                        return this
+                    }
+
+                    override fun self(): ExpediteStoryBuilder {
+                        return this
+                    }
+
+                    override fun build(): Story.ExpediteStory{
+                        return card
+                    }
+
+
+                }
+            }
+        }
+
+    }
     }

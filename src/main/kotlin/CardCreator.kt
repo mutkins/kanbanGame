@@ -12,12 +12,6 @@ interface CardCreator {
                         .setEstimate()
                         .setLetterIndex()
                         .build()
-
-//                    val foo = Story.UsualStory(i)
-//                    foo.setLetterIndex()
-//                    foo.setEstimate()
-//                    foo.setPrice()
-//                    foo.setTitle()
                     stories.add(foo)
                 }
 //                Card.cardList.add(stories)
@@ -30,12 +24,13 @@ interface CardCreator {
                 val stories: MutableList<Story.FixedDateStory> = mutableListOf()
                 for (i in 1..count) {
                     try{
-                    val foo = Story.FixedDateStory(i)
-                    foo.setLetterIndex()
-                    foo.setEstimate()
-                    foo.setPrice()
-                    foo.setDueDay()
-                    foo.setTitle()
+                    val foo = Story.StoryBuilder.FixedDateStoryBuilder(i)
+                    .setLetterIndex()
+                    .setEstimate()
+                    .setPrice()
+                    .setDueDay()
+                    .setTitle()
+                    .build()
                     stories.add(foo)
                     }
                     catch (e: IteratorException){
@@ -98,10 +93,11 @@ interface CardCreator {
                 val troubles: MutableList<Trouble> = mutableListOf()
                 for (i in 1..count) {
                     try {
-                        val foo = Trouble.HarmlessTrouble()
-                        foo.setLetterIndex()
-                        foo.setText()
-                        foo.setDangerScore()
+                        val foo = Card.Builder.TextCardBuilder.TroubleBuilder.HarmlessTroubleBuilder()
+                        .setLetterIndex()
+                        .setText()
+                        .setDangerScore()
+                        .build()
                         troubles.add(foo)
                     }
                     catch (e: IteratorException){
@@ -117,11 +113,12 @@ interface CardCreator {
                 val troubles: MutableList<Trouble> = mutableListOf()
                 for (i in 1..count) {
                     try{
-                    val foo = Trouble.EasyTrouble()
-                    foo.setLetterIndex()
-                    foo.setText()
-                    foo.setDangerScore()
-                    troubles.add(foo)
+                    val foo = Card.Builder.TextCardBuilder.TroubleBuilder.EasyTroubleBuilder()
+                        .setLetterIndex()
+                        .setText()
+                        .setDangerScore()
+                        .build()
+                        troubles.add(foo)
                 }
                 catch (e: IteratorException){
                     break
@@ -136,11 +133,12 @@ interface CardCreator {
                 val troubles: MutableList<Trouble> = mutableListOf()
                 for (i in 1..count) {
                     try{
-                    val foo = Trouble.SeriousTrouble()
-                    foo.setLetterIndex()
-                    foo.setText()
-                    foo.setDangerScore()
-                    troubles.add(foo)
+                    val foo = Card.Builder.TextCardBuilder.TroubleBuilder.SeriousTroubleBuilder()
+                        .setLetterIndex()
+                        .setText()
+                        .setDangerScore()
+                        .build()
+                        troubles.add(foo)
                 }
                 catch (e: IteratorException){
                     break
@@ -155,11 +153,12 @@ interface CardCreator {
                 val troubles: MutableList<Trouble> = mutableListOf()
                 for (i in 1..count) {
                     try{
-                    val foo = Trouble.AwfulTrouble()
-                    foo.setLetterIndex()
-                    foo.setText()
-                    foo.setDangerScore()
-                    troubles.add(foo)
+                    val foo = Card.Builder.TextCardBuilder.TroubleBuilder.AwfulTroubleBuilder()
+                        .setLetterIndex()
+                        .setText()
+                        .setDangerScore()
+                        .build()
+                        troubles.add(foo)
                 }
                 catch (e: IteratorException){
                     break
