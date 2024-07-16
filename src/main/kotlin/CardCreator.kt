@@ -6,7 +6,7 @@ interface CardCreator {
             override fun createCard(count: Int) {
                 val stories: MutableList<Story.UsualStory> = mutableListOf()
                 for (i in 1..count) {
-                    val foo = Story.StoryBuilder.UsualStoryBuilder(i)
+                    val foo = Card.Builder.StoryBuilder.UsualStoryBuilder(i)
                         .setPrice()
                         .setTitle()
                         .setEstimate()
@@ -24,7 +24,7 @@ interface CardCreator {
                 val stories: MutableList<Story.FixedDateStory> = mutableListOf()
                 for (i in 1..count) {
                     try{
-                    val foo = Story.StoryBuilder.FixedDateStoryBuilder(i)
+                    val foo = Card.Builder.StoryBuilder.StoryWithDueDateBuilder.FixedDateStoryBuilder(i)
                     .setLetterIndex()
                     .setEstimate()
                     .setPrice()

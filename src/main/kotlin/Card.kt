@@ -3,7 +3,6 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook
 import java.io.FileOutputStream
 
 abstract class Card(var letterIndex: String = ""){
-    abstract fun setLetterIndex()
 
     companion object {
         var cardList: MutableList<MutableList<Card>> = mutableListOf()
@@ -304,3 +303,4 @@ abstract class Card(var letterIndex: String = ""){
 
     }
     }
+
