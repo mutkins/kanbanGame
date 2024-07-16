@@ -27,7 +27,7 @@ abstract class Story(
         abstract fun setDueDay()
     }
 
-    abstract class StoryWithStabilityScore(num: Int, private var stabilityScore: Int = 0):Story(num){
+    abstract class StoryWithStabilityScore(num: Int, var stabilityScore: Int = 0):Story(num){
         fun setStabilityScore(){
             val mapping = Data.BaseComplexityRange.RANGE.zip(Data.StabilityScoreRange.RANGE).toMap()
             stabilityScore = mapping[baseComplexity]?: 0

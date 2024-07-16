@@ -47,12 +47,13 @@ interface CardCreator {
                 val stories: MutableList<Story.OptimizationStory> = mutableListOf()
                 for (i in 1..count) {
                     try{
-                    val foo = Story.OptimizationStory(i)
-                    foo.setLetterIndex()
-                    foo.setEstimate()
-                    foo.setPrice()
-                    foo.setStabilityScore()
-                    foo.setTitle()
+                    val foo = Card.Builder.StoryBuilder.StoryWithStabilityScoreBuilder.OptimizationStoryBuilder(i)
+                    .setLetterIndex()
+                    .setEstimate()
+                    .setPrice()
+                    .setStabilityScore()
+                    .setTitle()
+                    .build()
                     stories.add(foo)
                     }
                     catch (e: IteratorException){
@@ -69,12 +70,13 @@ interface CardCreator {
                 val stories: MutableList<Story.ExpediteStory> = mutableListOf()
                 for (i in 1..count) {
                     try{
-                    val foo = Story.ExpediteStory(i)
-                    foo.setLetterIndex()
-                    foo.setEstimate()
-                    foo.setPrice()
-                    foo.setDueDay()
-                    foo.setTitle()
+                    val foo = Card.Builder.StoryBuilder.StoryWithDueDateBuilder.ExpediteStoryBuilder(i)
+                    .setLetterIndex()
+                    .setEstimate()
+                    .setPrice()
+                    .setDueDay()
+                    .setTitle()
+                    .build()
                     stories.add(foo)
                     }
                     catch (e: IteratorException){
@@ -175,9 +177,10 @@ interface CardCreator {
                 val modifications: MutableList<Modification> = mutableListOf()
                 for (i in 1..count) {
                     try{
-                        val foo = Modification()
-                        foo.setLetterIndex()
-                        foo.setText()
+                        val foo = Card.Builder.TextCardBuilder.ModificationBuilder()
+                        .setLetterIndex()
+                        .setText()
+                        .build()
                         modifications.add(foo)
                     }
                     catch (e: IteratorException){

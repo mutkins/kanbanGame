@@ -249,6 +249,7 @@ abstract class Card(var letterIndex: String = ""){
                     override val card: Story.ExpediteStory = Story.ExpediteStory(i)
                     override fun setLetterIndex(): ExpediteStoryBuilder {
                         card.letterIndex = Data.LetterIndexMap.MAP["ExpediteStory"] ?: ""
+                        return this
                     }
 
                     override fun setDueDay():ExpediteStoryBuilder {
@@ -269,6 +270,34 @@ abstract class Card(var letterIndex: String = ""){
                     }
 
 
+                }
+            }
+            abstract class StoryWithStabilityScoreBuilder<B: StoryWithStabilityScoreBuilder<B,C>, C: Story.StoryWithStabilityScore>:StoryBuilder<B,C>(){
+
+                fun setStabilityScore(): B{
+                    val mapping = Data.BaseComplexityRange.RANGE.zip(Data.StabilityScoreRange.RANGE).toMap()
+                    card.stabilityScore = mapping[card.baseComplexity]?: 0
+                    return self()
+                }
+                class OptimizationStoryBuilder(i: Int): StoryWithStabilityScoreBuilder<OptimizationStoryBuilder, Story.OptimizationStory>(){
+                    override val card: Story.OptimizationStory = Story.OptimizationStory(i)
+
+                    override fun setLetterIndex(): OptimizationStoryBuilder {
+                        card.letterIndex = Data.LetterIndexMap.MAP["OptimizationStory"] ?: ""
+                        return this
+                    }
+                    override fun setTitle(): OptimizationStoryBuilder {
+                        card.title = Data.OptimizationList.getNext()
+                        return this
+                    }
+
+                    override fun self(): OptimizationStoryBuilder {
+                        return this
+                    }
+
+                    override fun build(): Story.OptimizationStory {
+                        return card
+                    }
                 }
             }
         }
