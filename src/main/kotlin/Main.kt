@@ -17,42 +17,15 @@ fun main() {
     CardCreator.TroubleCreator.AwfulTrouble.createCard(40)
     CardCreator.ModificationCreator.Modific.createCard(15)
 
-//    val b = Card.CardHolder.StoriesHolder.ExpediteStory.stories
-
-//    CardPlacer.placeCardOnList(XSSFWorkbook(), Card.cardList)
-
-//    val row = sheet.getRow(0)
-//    val cell = row.getCell(0)
-//
-//    val borderStyle: CellStyle = wb.createCellStyle()
-//    borderStyle.borderBottom = Styles.OUTLINE_BORDER
-//    cell.setCellStyle(borderStyle)
-//
-//    val alignmentStyle = cell.cellStyle
-//    alignmentStyle.alignment = HorizontalAlignment.CENTER
-//    cell.setCellStyle(alignmentStyle)
-//    cell.setCellValue("T")
-
-
-
-
-    val gf = Card.CardHolder.StoriesHolder.UsualStory
-    var sheet = wb.createSheet("TT")
+    var rownum = 0
+    var columnNum = 0
+    var sheet = wb.createSheet("S")
     Utils.createRows(sheet)
     Utils.setColumnsWidth(sheet)
-    val r = ExcelCard.ExcelStory.ExcelExpediteStory(Card.CardHolder.StoriesHolder.ExpediteStory.stories[0])
-    val v = ExcelCard.ExcelStory.ExcelUsualStory(Card.CardHolder.StoriesHolder.UsualStory.stories[0])
-    val f = ExcelCard.ExcelStory.ExcelOptimizationStory(Card.CardHolder.StoriesHolder.OptimizationStory.stories[0])
-    r.setCoordinates(0,0)
-    r.writeLeftBarValue(sheet)
-    r.writeRightBarValue(sheet)
-    r.writeTitle(sheet)
-    r.writeOutlineBorder(sheet)
-    r.fillCard(sheet)
-    r.writeFirstRange(sheet)
-    r.writeSecondRange(sheet)
-    r.writeThirdRange(sheet)
-
+    for (story in Card.CardHolder.StoriesHolder.UsualStory.stories){
+        ExcelCard.ExcelStory.ExcelUsualStory(story).placeCard(sheet, rownum, columnNum)
+        rownum += 9
+    }
     FileOutputStream("workbook.xlsx").use { fileOut -> wb.write(fileOut)}
     println()
 

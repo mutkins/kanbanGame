@@ -17,11 +17,10 @@ abstract class ExcelCard(
     protected var backgroundColor: Short = Styles.DEFAULT_COLOR
 ) {
 
-    fun placeCard(sheet: Sheet){
+    abstract fun placeCard(sheet: Sheet, firstRow: Int, firstColumn: Int)
 
-    }
 
-    fun fillCard(sheet: Sheet) {
+    protected fun fillCard(sheet: Sheet) {
         for (rowNum in firstRow..lastRow){
             val row = sheet.getRow(rowNum)
             for (columnNum in firstColumn..lastColumn){
@@ -31,7 +30,7 @@ abstract class ExcelCard(
         }
     }
 
-    fun writeOutlineBorder(sheet: Sheet){
+    protected fun writeOutlineBorder(sheet: Sheet){
         for (rowNum in firstRow..lastRow){
             for (columnNum in firstColumn..lastColumn){
                 val style: CellStyle = getCellStyle(sheet, rowNum,columnNum)
@@ -46,7 +45,7 @@ abstract class ExcelCard(
         }
     }
 
-    fun writeLeftBarValue(sheet: Sheet){
+    protected fun writeLeftBarValue(sheet: Sheet){
         val row = sheet.getRow(firstRow)
         val cell = row.getCell(firstColumn)
         cell.setCellValue(leftBar)
@@ -56,7 +55,7 @@ abstract class ExcelCard(
 
     }
 
-    fun writeRightBarValue(sheet: Sheet){
+    protected fun writeRightBarValue(sheet: Sheet){
         val row = sheet.getRow(firstRow)
         val cell = row.getCell(lastColumn-4)
         cell.setCellValue(rightBar)
@@ -66,7 +65,7 @@ abstract class ExcelCard(
 
     }
 
-    fun writeTitle(sheet: Sheet){
+    protected fun writeTitle(sheet: Sheet){
         val row = sheet.getRow(firstRow+1)
         val cell = row.getCell(firstColumn+1)
         cell.setCellValue(title)
@@ -76,24 +75,24 @@ abstract class ExcelCard(
     }
 
 
-    fun setCoordinates(firstRow: Int, firstColumn: Int){
+    protected fun setCoordinates(firstRow: Int, firstColumn: Int){
         this.firstRow = firstRow
         this.firstColumn = firstColumn
         this.lastRow = this.firstRow + 8
         this.lastColumn = this.firstColumn + 16
     }
 
-    private fun mergeCells(sheet: Sheet, firstRow: Int, lastRow: Int, firstCol: Int, lastCol: Int){
+    protected fun mergeCells(sheet: Sheet, firstRow: Int, lastRow: Int, firstCol: Int, lastCol: Int){
         val cellRangeAddress = CellRangeAddress(firstRow, lastRow, firstCol, lastCol)
         sheet.addMergedRegion(cellRangeAddress)
     }
-    private fun doHorizontalAlignment(cell: Cell){
+    protected fun doHorizontalAlignment(cell: Cell){
         val style: CellStyle = getCellStyle(cell)
         style.alignment = HorizontalAlignment.CENTER
         cell.cellStyle = style
     }
 
-    private fun doBoldFont(cell: Cell){
+    protected fun doBoldFont(cell: Cell){
         val style: CellStyle = getCellStyle(cell)
         val font: Font = wb.createFont()
         font.bold = true
@@ -128,10 +127,23 @@ abstract class ExcelCard(
             title = story.title
         }
 
+        override fun placeCard(sheet: Sheet, firstRow: Int, firstColumn: Int) {
+            setCoordinates(firstRow,firstColumn)
+            writeFirstRange(sheet)
+            writeSecondRange(sheet)
+            writeThirdRange(sheet)
+            fillCard(sheet)
+            writeOutlineBorder(sheet)
+            writeTitle(sheet)
+            writeLeftBarValue(sheet)
+            writeRightBarValue(sheet)
 
-        fun writeFirstRange(sheet: Sheet){
+        }
+
+        private fun writeFirstRange(sheet: Sheet){
             val row = sheet.getRow(firstRow+3)
             for (columnNum in firstColumn+1..firstRangeCount){
+                println(columnNum)
                 val cell = row.getCell(columnNum)
                 val style = getCellStyle(cell)
                 style.borderTop = Styles.RANGE_BORDER
@@ -142,7 +154,7 @@ abstract class ExcelCard(
                 cell.cellStyle = style
             }
         }
-        fun writeSecondRange(sheet: Sheet){
+        private fun writeSecondRange(sheet: Sheet){
             val row = sheet.getRow(firstRow+5)
             for (columnNum in firstColumn+1..secondRangeCount){
                 val cell = row.getCell(columnNum)
@@ -156,7 +168,7 @@ abstract class ExcelCard(
             }
 
         }
-        fun writeThirdRange(sheet: Sheet){
+        private fun writeThirdRange(sheet: Sheet){
             val row = sheet.getRow(firstRow+7)
             for (columnNum in firstColumn+1..thirdRangeCount){
                 val cell = row.getCell(columnNum)
@@ -212,6 +224,14 @@ abstract class ExcelCard(
         init {
             backgroundColor = Styles.TROUBLE_COLOR
         }
+        override fun placeCard(sheet: Sheet, firstRow: Int, firstColumn: Int) {
+            fillCard(sheet)
+            writeOutlineBorder(sheet)
+            writeTitle(sheet)
+            writeLeftBarValue(sheet)
+            writeRightBarValue(sheet)
+
+        }
     }
 
     class ExcelModification(
@@ -219,6 +239,14 @@ abstract class ExcelCard(
     ): ExcelTextCard(){
         init {
             backgroundColor = Styles.MODIFICATION_COLOR
+        }
+        override fun placeCard(sheet: Sheet, firstRow: Int, firstColumn: Int) {
+            fillCard(sheet)
+            writeOutlineBorder(sheet)
+            writeTitle(sheet)
+            writeLeftBarValue(sheet)
+            writeRightBarValue(sheet)
+
         }
     }
 

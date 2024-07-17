@@ -229,7 +229,7 @@ abstract class Card(var letterIndex: String = ""){
                     }
 
                     override fun setTitle() :FixedDateStoryBuilder {
-                        card.title = "Крайний срок: $card.dueDay день"
+                        card.title = "Крайний срок: ${card.dueDay} день"
                         return this
                     }
 
@@ -256,7 +256,7 @@ abstract class Card(var letterIndex: String = ""){
                         return this
                     }
                     override fun setTitle(): ExpediteStoryBuilder {
-                        card.title = "Срок: $card.dueDay дня"
+                        card.title = "Срок: ${card.dueDay} дня"
                         return this
                     }
 

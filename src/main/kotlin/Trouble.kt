@@ -1,7 +1,4 @@
-abstract class Trouble(
-    var rate: Int,
-    var dangerScore: Int = 0
-):TextCard()
+abstract class Trouble(var rate: Int, var dangerScore: Int = 0):TextCard()
 {
     class HarmlessTrouble(rate: Int = 0):Trouble(rate)
 

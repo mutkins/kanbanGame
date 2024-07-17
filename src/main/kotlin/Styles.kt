@@ -22,6 +22,6 @@ class Styles {
         val MODIFICATION_COLOR = DEFAULT_COLOR
 
         val COLUMN_COUNT = 40
-        val ROWS_COUNT = 400
+        val ROWS_COUNT = 4000
     }
 }
