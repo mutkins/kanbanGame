@@ -1,6 +1,8 @@
 import Utils.wb
 import org.apache.poi.ss.usermodel.*
 import org.apache.poi.ss.util.CellRangeAddress
+import org.apache.poi.xssf.usermodel.XSSFCell
+import org.apache.poi.xssf.usermodel.XSSFCellStyle
 import org.apache.poi.xssf.usermodel.XSSFFont
 import org.openxmlformats.schemas.officeDocument.x2006.sharedTypes.STGuid
 
@@ -25,7 +27,13 @@ abstract class ExcelCard(
             val row = sheet.getRow(rowNum)
             for (columnNum in firstColumn..lastColumn){
                 val cell = row.getCell(columnNum)
-                fillCell(cell, backgroundColor)
+                val style: XSSFCellStyle = getCellStyle(cell as XSSFCell)
+                val format = MyCellFormat(style)
+//                fillCell(cell, backgroundColor)
+                format.fillForegroundColor = backgroundColor
+                format.fillPattern = Styles.FILL_PATTERN_GLOBAL
+                val newStyle = getCellStyle(format)
+                cell.cellStyle = newStyle
             }
         }
     }
@@ -33,14 +41,22 @@ abstract class ExcelCard(
     protected fun writeOutlineBorder(sheet: Sheet){
         for (rowNum in firstRow..lastRow){
             for (columnNum in firstColumn..lastColumn){
-                val style: CellStyle = getCellStyle(sheet, rowNum,columnNum)
-                style.borderTop = if (rowNum == firstRow) Styles.OUTLINE_BORDER else BorderStyle.NONE
-                style.borderRight = if  (columnNum == lastColumn) Styles.OUTLINE_BORDER else BorderStyle.NONE
-                style.borderBottom = if  (rowNum == lastRow) Styles.OUTLINE_BORDER else BorderStyle.NONE
-                style.borderLeft = if  (columnNum == firstColumn) Styles.OUTLINE_BORDER else BorderStyle.NONE
                 val row = sheet.getRow(rowNum)
                 val cell = row.getCell(columnNum)
-                cell.cellStyle = style
+                val style: XSSFCellStyle = getCellStyle(cell as XSSFCell)
+                val format = MyCellFormat(style)
+
+                format.borderTop = if (rowNum == firstRow) Styles.OUTLINE_BORDER else BorderStyle.NONE
+                format.borderRight = if  (columnNum == lastColumn) Styles.OUTLINE_BORDER else BorderStyle.NONE
+                format.borderBottom = if  (rowNum == lastRow) Styles.OUTLINE_BORDER else BorderStyle.NONE
+                format.borderLeft = if  (columnNum == firstColumn) Styles.OUTLINE_BORDER else BorderStyle.NONE
+
+                val newStyle = getCellStyle(format)
+//                style.borderTop = if (rowNum == firstRow) Styles.OUTLINE_BORDER else BorderStyle.NONE
+//                style.borderRight = if  (columnNum == lastColumn) Styles.OUTLINE_BORDER else BorderStyle.NONE
+//                style.borderBottom = if  (rowNum == lastRow) Styles.OUTLINE_BORDER else BorderStyle.NONE
+//                style.borderLeft = if  (columnNum == firstColumn) Styles.OUTLINE_BORDER else BorderStyle.NONE
+                cell.cellStyle = newStyle
             }
         }
     }
@@ -87,23 +103,32 @@ abstract class ExcelCard(
         sheet.addMergedRegion(cellRangeAddress)
     }
     protected fun doHorizontalAlignment(cell: Cell){
-        val style: CellStyle = getCellStyle(cell)
-        style.alignment = HorizontalAlignment.CENTER
-        cell.cellStyle = style
+        val style: XSSFCellStyle = getCellStyle(cell as XSSFCell)
+        val format = MyCellFormat(style)
+        format.alignment = HorizontalAlignment.CENTER
+        val newStyle = getCellStyle(format)
+        cell.cellStyle = newStyle
     }
 
     protected fun doBoldFont(cell: Cell){
-        val style: CellStyle = getCellStyle(cell)
-        val font: Font = wb.createFont()
-        font.bold = true
-        style.setFont(font)
-        cell.cellStyle = style
+//        val style: XSSFCellStyle = getCellStyle(cell as XSSFCell)
+//        val font: Font = wb.createFont()
+//        font.bold = true
+//        style.setFont(font)
+        val style: XSSFCellStyle = getCellStyle(cell as XSSFCell)
+        val format = MyCellFormat(style)
+        format.alignment = HorizontalAlignment.CENTER
+        val newStyle = getCellStyle(format)
+        cell.cellStyle = newStyle
     }
 
     protected fun fillCell(cell: Cell, color: Short){
-        val style: CellStyle = getCellStyle(cell)
-        style.fillForegroundColor = color
-        style.fillPattern = Styles.FILL_PATTERN_GLOBAL
+        val style: XSSFCellStyle = getCellStyle(cell as XSSFCell)
+        val format = MyCellFormat(style)
+        format.fillForegroundColor = color
+        format.fillPattern = Styles.FILL_PATTERN_GLOBAL
+        val newStyle = getCellStyle(format)
+        cell.cellStyle = newStyle
     }
 
     abstract class ExcelStory(
@@ -129,11 +154,11 @@ abstract class ExcelCard(
 
         override fun placeCard(sheet: Sheet, firstRow: Int, firstColumn: Int) {
             setCoordinates(firstRow,firstColumn)
+            fillCard(sheet)
+            writeOutlineBorder(sheet)
             writeFirstRange(sheet)
             writeSecondRange(sheet)
             writeThirdRange(sheet)
-            fillCard(sheet)
-            writeOutlineBorder(sheet)
             writeTitle(sheet)
             writeLeftBarValue(sheet)
             writeRightBarValue(sheet)
@@ -142,43 +167,56 @@ abstract class ExcelCard(
 
         private fun writeFirstRange(sheet: Sheet){
             val row = sheet.getRow(firstRow+3)
-            for (columnNum in firstColumn+1..firstRangeCount){
+            for (columnNum in firstColumn+1..firstColumn+1+firstRangeCount){
                 println(columnNum)
                 val cell = row.getCell(columnNum)
-                val style = getCellStyle(cell)
-                style.borderTop = Styles.RANGE_BORDER
-                style.borderRight = Styles.RANGE_BORDER
-                style.borderBottom = Styles.RANGE_BORDER
-                style.borderLeft = Styles.RANGE_BORDER
+                val style: XSSFCellStyle = getCellStyle(cell as XSSFCell)
+                val format = MyCellFormat(style)
+                format.borderTop = Styles.RANGE_BORDER
+                format.borderRight = Styles.RANGE_BORDER
+                format.borderBottom = Styles.RANGE_BORDER
+                format.borderLeft = Styles.RANGE_BORDER
+                format.fillForegroundColor = Styles.FIRST_RANGE_COLOR
+                format.fillPattern = Styles.FILL_PATTERN_GLOBAL
                 fillCell(cell, Styles.FIRST_RANGE_COLOR)
-                cell.cellStyle = style
+                val newStyle = getCellStyle(format)
+                cell.cellStyle = newStyle
             }
         }
         private fun writeSecondRange(sheet: Sheet){
             val row = sheet.getRow(firstRow+5)
-            for (columnNum in firstColumn+1..secondRangeCount){
+            for (columnNum in firstColumn+1..firstColumn+1+secondRangeCount){
                 val cell = row.getCell(columnNum)
-                val style = getCellStyle(cell)
-                style.borderTop = Styles.RANGE_BORDER
-                style.borderRight = Styles.RANGE_BORDER
-                style.borderBottom = Styles.RANGE_BORDER
-                style.borderLeft = Styles.RANGE_BORDER
-                fillCell(cell, Styles.SECOND_RANGE_COLOR)
-                cell.cellStyle = style
+//                val style = getCellStyle(cell as XSSFCell)
+                val style: XSSFCellStyle = getCellStyle(cell as XSSFCell)
+                val format = MyCellFormat(style)
+                format.borderTop = Styles.RANGE_BORDER
+                format.borderRight = Styles.RANGE_BORDER
+                format.borderBottom = Styles.RANGE_BORDER
+                format.borderLeft = Styles.RANGE_BORDER
+                format.fillForegroundColor = Styles.SECOND_RANGE_COLOR
+                format.fillPattern = Styles.FILL_PATTERN_GLOBAL
+//                fillCell(cell, Styles.SECOND_RANGE_COLOR)
+                val newStyle = getCellStyle(format)
+                cell.cellStyle = newStyle
             }
 
         }
         private fun writeThirdRange(sheet: Sheet){
             val row = sheet.getRow(firstRow+7)
-            for (columnNum in firstColumn+1..thirdRangeCount){
+            for (columnNum in firstColumn+1..firstColumn+1+thirdRangeCount){
                 val cell = row.getCell(columnNum)
-                val style = getCellStyle(cell)
-                style.borderTop = Styles.RANGE_BORDER
-                style.borderRight = Styles.RANGE_BORDER
-                style.borderBottom = Styles.RANGE_BORDER
-                style.borderLeft = Styles.RANGE_BORDER
-                fillCell(cell, Styles.THIRD_RANGE_COLOR)
-                cell.cellStyle = style
+                val style: XSSFCellStyle = getCellStyle(cell as XSSFCell)
+                val format = MyCellFormat(style)
+                format.borderTop = Styles.RANGE_BORDER
+                format.borderRight = Styles.RANGE_BORDER
+                format.borderBottom = Styles.RANGE_BORDER
+                format.borderLeft = Styles.RANGE_BORDER
+                format.fillForegroundColor = Styles.THIRD_RANGE_COLOR
+                format.fillPattern = Styles.FILL_PATTERN_GLOBAL
+//                fillCell(cell, Styles.THIRD_RANGE_COLOR)
+                val newStyle = getCellStyle(format)
+                cell.cellStyle = newStyle
             }
         }
         class ExcelUsualStory(story: Story.UsualStory):ExcelStory(story as Story){
@@ -253,15 +291,14 @@ abstract class ExcelCard(
 
 companion object{
 
-    fun getCellStyle(sheet: Sheet, rowNum: Int, colNum: Int) : CellStyle{
-        val row = sheet.getRow(rowNum)
-        val cell = row.getCell(colNum)
-        val a = cell.cellStyle
+    fun getCellStyle(cell: XSSFCell): XSSFCellStyle{
+
         return cell.cellStyle
     }
-    fun getCellStyle(cell: Cell): CellStyle{
-        val a = cell.cellStyle
-        return cell.cellStyle
+
+    fun getCellStyle(format: MyCellFormat): XSSFCellStyle{
+
+        return StyleCache.getOrCreateStyle(format)
     }
 }
 

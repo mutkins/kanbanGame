@@ -1,6 +1,7 @@
 import org.apache.poi.ss.usermodel.BorderStyle
 import org.apache.poi.ss.usermodel.FillPatternType
 import org.apache.poi.ss.usermodel.IndexedColors
+import org.apache.poi.xssf.usermodel.XSSFFont
 
 class Styles {
     companion object{
@@ -20,8 +21,9 @@ class Styles {
         val EXPEDITE_STORY_COLOR = IndexedColors.RED.getIndex()
         val TROUBLE_COLOR = DEFAULT_COLOR
         val MODIFICATION_COLOR = DEFAULT_COLOR
+//        val DEFAULT_FONT = wb.createFont()
 
         val COLUMN_COUNT = 40
-        val ROWS_COUNT = 4000
+        val ROWS_COUNT = 6000
     }
 }
