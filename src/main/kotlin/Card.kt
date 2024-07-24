@@ -1,7 +1,3 @@
-import org.apache.poi.ss.usermodel.*
-import org.apache.poi.xssf.usermodel.XSSFWorkbook
-import java.io.FileOutputStream
-
 abstract class Card(var letterIndex: String = ""){
 
     companion object {
@@ -15,7 +11,7 @@ abstract class Card(var letterIndex: String = ""){
             data object UsualStory: CardHolder() {
                 var stories: MutableList<Story.UsualStory> = mutableListOf()
                 fun addCardList(list: MutableList<Story.UsualStory>) {
-                    stories = list
+                    stories += list
                 }
 
                 fun placeCardOnSheet(){
@@ -28,31 +24,31 @@ abstract class Card(var letterIndex: String = ""){
             data object FixedDateStory: CardHolder() {
                 var stories: MutableList<Story.FixedDateStory> = mutableListOf()
                 fun addCardList(list: MutableList<Story.FixedDateStory>) {
-                    stories = list
+                    stories += list
                 }
             }
             data object OptimizationStory: CardHolder() {
                 var stories: MutableList<Story.OptimizationStory> = mutableListOf()
                 fun addCardList(list: MutableList<Story.OptimizationStory>) {
-                    stories = list
+                    stories += list
                 }
             }
             data object ExpediteStory: CardHolder() {
                 var stories: MutableList<Story.ExpediteStory> = mutableListOf()
                 fun addCardList(list: MutableList<Story.ExpediteStory>) {
-                    stories = list
+                    stories += list
                 }
             }
             }
-        data object TroubleO: CardHolder(){
+        data object TroubleHolder: CardHolder(){
              var stories: MutableList<Trouble> = mutableListOf()
             fun addCardList(list: MutableList<Trouble>) {
-                stories = list
+                stories += list
             }}
-        data object ModificationO: CardHolder(){
+        data object ModificationHolder: CardHolder(){
             var stories: MutableList<Modification> = mutableListOf()
             fun addCardList(list: MutableList<Modification>) {
-                stories = list
+                stories += list
             }
         }
         }
@@ -95,7 +91,7 @@ abstract class Card(var letterIndex: String = ""){
                 class EasyTroubleBuilder: TroubleBuilder<EasyTroubleBuilder,Trouble.EasyTrouble>() {
                     override val card: Trouble.EasyTrouble = Trouble.EasyTrouble()
                     override fun setText(): EasyTroubleBuilder{
-                        card.text = Data.HarmlessTroubleList.getNext()
+                        card.text = Data.EasyTroubleList.getNext()
                         return this
                     }
 
@@ -116,7 +112,7 @@ abstract class Card(var letterIndex: String = ""){
                 class SeriousTroubleBuilder: TroubleBuilder<SeriousTroubleBuilder,Trouble.SeriousTrouble>() {
                     override val card: Trouble.SeriousTrouble = Trouble.SeriousTrouble()
                     override fun setText(): SeriousTroubleBuilder{
-                        card.text = Data.HarmlessTroubleList.getNext()
+                        card.text = Data.SeriousTroubleList.getNext()
                         return this
                     }
 
@@ -137,12 +133,12 @@ abstract class Card(var letterIndex: String = ""){
                 class AwfulTroubleBuilder: TroubleBuilder<AwfulTroubleBuilder,Trouble.AwfulTrouble>() {
                     override val card: Trouble.AwfulTrouble = Trouble.AwfulTrouble()
                     override fun setText(): AwfulTroubleBuilder{
-                        card.text = Data.HarmlessTroubleList.getNext()
+                        card.text = Data.AwfulTroubleList.getNext()
                         return this
                     }
 
                     override fun setDangerScore(): AwfulTroubleBuilder {
-                        card.dangerScore = Data.TroubleRange.Harmless.RANGE.random()
+                        card.dangerScore = Data.TroubleRange.Awful.RANGE.random()
                         return this
                     }
                     override fun self(): AwfulTroubleBuilder {

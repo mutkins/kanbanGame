@@ -10,8 +10,10 @@ class MyCellFormat(
     var borderBottom: BorderStyle = BorderStyle.NONE,
     var fillForegroundColor: Short = Styles.DEFAULT_COLOR,
     var fillPattern: FillPatternType = FillPatternType.NO_FILL,
-    var alignment: HorizontalAlignment = HorizontalAlignment.GENERAL,
-    var font: XSSFFont = wb.createFont()
+    var horizontalAlignment: HorizontalAlignment = HorizontalAlignment.GENERAL,
+    var font: FontFormat = FontFormat(wb.createFont()),
+    var wrapText: Boolean = false,
+    var verticalAlignment: VerticalAlignment = VerticalAlignment.BOTTOM
 )
 {
     constructor(style: XSSFCellStyle): this(
@@ -21,37 +23,57 @@ class MyCellFormat(
         borderBottom= style.borderBottom,
         fillForegroundColor= style.fillForegroundColor,
         fillPattern= style.fillPattern,
-        alignment= style.alignment,
-        font = style.font
-    ){
-
-    }
+        horizontalAlignment= style.alignment,
+        font = FontFormat(style.font),
+        verticalAlignment = style.verticalAlignment,
+        wrapText = style.wrapText
+    )
 
     fun toCacheString(): String{
-        return "$borderLeft-$borderTop-$borderRight-$borderBottom-$fillForegroundColor-$fillPattern-$alignment-$font"
+        println("$borderLeft-$borderTop-$borderRight-$borderBottom-$fillForegroundColor-$fillPattern-$horizontalAlignment-$verticalAlignment-$wrapText-${font.toCacheString()}")
+        return "$borderLeft-$borderTop-$borderRight-$borderBottom-$fillForegroundColor-$fillPattern-$horizontalAlignment-$verticalAlignment-$wrapText-${font.toCacheString()}"
+    }
+}
+
+class FontFormat(
+    var bold: Boolean = false
+){
+    constructor(font: Font): this(){
+        bold = font.bold
+    }
+    fun toCacheString(): String{
+        return "$bold"
     }
 }
 
 object StyleCache{
 
     private val styleCache: MutableMap<String, XSSFCellStyle> = mutableMapOf()
-    fun getOrCreateStyle(format: MyCellFormat): XSSFCellStyle{
-        var a = format.toCacheString()
-        val _styleCache = styleCache
-        if (styleCache[format.toCacheString()] == null){
-            val style = wb.createCellStyle()
-            style.borderLeft = format.borderLeft
-            style.borderTop = format.borderTop
-            style.borderRight = format.borderRight
-            style.borderBottom = format.borderBottom
-            style.fillForegroundColor = format.fillForegroundColor
-            style.fillPattern = format.fillPattern
-            style.alignment = format.alignment
-            style.setFont(format.font)
-            styleCache[format.toCacheString()] = style
-        }
-        return styleCache[format.toCacheString()]!!
 
+    fun getOrCreateStyle(format: MyCellFormat): XSSFCellStyle{
+        return styleCache.getOrPut(format.toCacheString()){
+            wb.createCellStyle().apply {
+                borderLeft = format.borderLeft
+                borderTop = format.borderTop
+                borderRight = format.borderRight
+                borderBottom = format.borderBottom
+                fillForegroundColor = format.fillForegroundColor
+                fillPattern = format.fillPattern
+                alignment = format.horizontalAlignment
+                wrapText = format.wrapText
+                verticalAlignment = format.verticalAlignment
+                setFont(getOrCreateFont(format.font))
+            }
+        }
+
+    }
+    private val fontCache: MutableMap<String, XSSFFont> = mutableMapOf()
+    fun getOrCreateFont(fontFormat: FontFormat): XSSFFont{
+        return fontCache.getOrPut(fontFormat.toCacheString()){
+            wb.createFont().apply {
+                bold = fontFormat.bold
+            }
+        }
     }
 
 }

@@ -107,7 +107,7 @@ interface CardCreator {
                     }
                 }
 //                Card.cardList.add(troubles)
-                Card.CardHolder.TroubleO.addCardList(troubles)
+                Card.CardHolder.TroubleHolder.addCardList(troubles)
             }
         }
         object EasyTrouble : CardCreator {
@@ -127,7 +127,7 @@ interface CardCreator {
                 }
                 }
 //                Card.cardList.add(troubles)
-                Card.CardHolder.TroubleO.addCardList(troubles)
+                Card.CardHolder.TroubleHolder.addCardList(troubles)
             }
         }
         object SeriousTrouble : CardCreator {
@@ -147,7 +147,7 @@ interface CardCreator {
                 }
                 }
 //                Card.cardList.add(troubles)
-                Card.CardHolder.TroubleO.addCardList(troubles)
+                Card.CardHolder.TroubleHolder.addCardList(troubles)
             }
         }
         object AwfulTrouble : CardCreator {
@@ -167,7 +167,7 @@ interface CardCreator {
                 }
                 }
 //                Card.cardList.add(troubles)
-                Card.CardHolder.TroubleO.addCardList(troubles)
+                Card.CardHolder.TroubleHolder.addCardList(troubles)
             }
         }
     }
@@ -188,7 +188,7 @@ interface CardCreator {
                     }
                 }
 //                Card.cardList.add(modifications)
-                Card.CardHolder.ModificationO.addCardList(modifications)
+                Card.CardHolder.ModificationHolder.addCardList(modifications)
             }
         }
     }

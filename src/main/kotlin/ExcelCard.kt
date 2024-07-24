@@ -4,7 +4,6 @@ import org.apache.poi.ss.util.CellRangeAddress
 import org.apache.poi.xssf.usermodel.XSSFCell
 import org.apache.poi.xssf.usermodel.XSSFCellStyle
 import org.apache.poi.xssf.usermodel.XSSFFont
-import org.openxmlformats.schemas.officeDocument.x2006.sharedTypes.STGuid
 
 
 abstract class ExcelCard(
@@ -26,6 +25,7 @@ abstract class ExcelCard(
         for (rowNum in firstRow..lastRow){
             val row = sheet.getRow(rowNum)
             for (columnNum in firstColumn..lastColumn){
+                println("Fill $rowNum:$columnNum cell")
                 val cell = row.getCell(columnNum)
                 val style: XSSFCellStyle = getCellStyle(cell as XSSFCell)
                 val format = MyCellFormat(style)
@@ -34,6 +34,7 @@ abstract class ExcelCard(
                 format.fillPattern = Styles.FILL_PATTERN_GLOBAL
                 val newStyle = getCellStyle(format)
                 cell.cellStyle = newStyle
+
             }
         }
     }
@@ -41,22 +42,18 @@ abstract class ExcelCard(
     protected fun writeOutlineBorder(sheet: Sheet){
         for (rowNum in firstRow..lastRow){
             for (columnNum in firstColumn..lastColumn){
+                println("write outline $rowNum:$columnNum cell")
                 val row = sheet.getRow(rowNum)
                 val cell = row.getCell(columnNum)
                 val style: XSSFCellStyle = getCellStyle(cell as XSSFCell)
                 val format = MyCellFormat(style)
-
                 format.borderTop = if (rowNum == firstRow) Styles.OUTLINE_BORDER else BorderStyle.NONE
                 format.borderRight = if  (columnNum == lastColumn) Styles.OUTLINE_BORDER else BorderStyle.NONE
                 format.borderBottom = if  (rowNum == lastRow) Styles.OUTLINE_BORDER else BorderStyle.NONE
                 format.borderLeft = if  (columnNum == firstColumn) Styles.OUTLINE_BORDER else BorderStyle.NONE
-
                 val newStyle = getCellStyle(format)
-//                style.borderTop = if (rowNum == firstRow) Styles.OUTLINE_BORDER else BorderStyle.NONE
-//                style.borderRight = if  (columnNum == lastColumn) Styles.OUTLINE_BORDER else BorderStyle.NONE
-//                style.borderBottom = if  (rowNum == lastRow) Styles.OUTLINE_BORDER else BorderStyle.NONE
-//                style.borderLeft = if  (columnNum == firstColumn) Styles.OUTLINE_BORDER else BorderStyle.NONE
                 cell.cellStyle = newStyle
+
             }
         }
     }
@@ -82,11 +79,15 @@ abstract class ExcelCard(
     }
 
     protected fun writeTitle(sheet: Sheet){
+
         val row = sheet.getRow(firstRow+1)
         val cell = row.getCell(firstColumn+1)
+        println("Write title on ${firstRow+1}: ${firstColumn+1}")
         cell.setCellValue(title)
+        println("Do bold font ${firstRow+1}: ${firstColumn+1}")
         doBoldFont(cell)
         mergeCells(sheet, firstRow + 1,firstRow + 1, firstColumn+1, lastColumn-1)
+        println("Do Horizontal Alignment ${firstRow+1}: ${firstColumn+1}")
         doHorizontalAlignment(cell)
     }
 
@@ -102,24 +103,37 @@ abstract class ExcelCard(
         val cellRangeAddress = CellRangeAddress(firstRow, lastRow, firstCol, lastCol)
         sheet.addMergedRegion(cellRangeAddress)
     }
+
+    protected fun doWrap(cell: XSSFCell){
+        val style: XSSFCellStyle = getCellStyle(cell as XSSFCell)
+        val format = MyCellFormat(style)
+        format.wrapText = true
+        val newStyle = getCellStyle(format)
+        cell.cellStyle = newStyle
+    }
     protected fun doHorizontalAlignment(cell: Cell){
         val style: XSSFCellStyle = getCellStyle(cell as XSSFCell)
         val format = MyCellFormat(style)
-        format.alignment = HorizontalAlignment.CENTER
+        format.horizontalAlignment = HorizontalAlignment.CENTER
+        val newStyle = getCellStyle(format)
+        cell.cellStyle = newStyle
+    }
+    protected fun doVerticalAlignment(cell: Cell){
+        val style: XSSFCellStyle = getCellStyle(cell as XSSFCell)
+        val format = MyCellFormat(style)
+        format.verticalAlignment = VerticalAlignment.CENTER
         val newStyle = getCellStyle(format)
         cell.cellStyle = newStyle
     }
 
     protected fun doBoldFont(cell: Cell){
-//        val style: XSSFCellStyle = getCellStyle(cell as XSSFCell)
-//        val font: Font = wb.createFont()
-//        font.bold = true
-//        style.setFont(font)
         val style: XSSFCellStyle = getCellStyle(cell as XSSFCell)
+        println("Cell style before bolding ${style.font.bold}")
         val format = MyCellFormat(style)
-        format.alignment = HorizontalAlignment.CENTER
-        val newStyle = getCellStyle(format)
+        format.font.bold = true
+         val newStyle = getCellStyle(format)
         cell.cellStyle = newStyle
+        println("Cell style after bolding ${style.font.bold}")
     }
 
     protected fun fillCell(cell: Cell, color: Short){
@@ -168,7 +182,6 @@ abstract class ExcelCard(
         private fun writeFirstRange(sheet: Sheet){
             val row = sheet.getRow(firstRow+3)
             for (columnNum in firstColumn+1..firstColumn+1+firstRangeCount){
-                println(columnNum)
                 val cell = row.getCell(columnNum)
                 val style: XSSFCellStyle = getCellStyle(cell as XSSFCell)
                 val format = MyCellFormat(style)
@@ -250,6 +263,16 @@ abstract class ExcelCard(
             textBar = card.text
         }
 
+        fun writeTextBar(sheet: Sheet){
+            val row = sheet.getRow(firstRow+1)
+            val cell = row.getCell(firstColumn+1)
+            cell.setCellValue(textBar)
+            doVerticalAlignment(cell)
+            doHorizontalAlignment(cell)
+            doWrap(cell as XSSFCell)
+            mergeCells(sheet, firstRow + 1,lastRow - 1, firstColumn+1, lastColumn-1)
+
+        }
     }
 
     class ExcelTrouble(
@@ -263,44 +286,38 @@ abstract class ExcelCard(
             backgroundColor = Styles.TROUBLE_COLOR
         }
         override fun placeCard(sheet: Sheet, firstRow: Int, firstColumn: Int) {
+            setCoordinates(firstRow,firstColumn)
             fillCard(sheet)
             writeOutlineBorder(sheet)
-            writeTitle(sheet)
             writeLeftBarValue(sheet)
             writeRightBarValue(sheet)
-
+            writeTextBar(sheet)
         }
+
+
     }
 
-    class ExcelModification(
-
-    ): ExcelTextCard(){
+    class ExcelModification(story: Modification): ExcelTextCard(story){
         init {
             backgroundColor = Styles.MODIFICATION_COLOR
         }
         override fun placeCard(sheet: Sheet, firstRow: Int, firstColumn: Int) {
+            setCoordinates(firstRow,firstColumn)
             fillCard(sheet)
             writeOutlineBorder(sheet)
-            writeTitle(sheet)
-            writeLeftBarValue(sheet)
-            writeRightBarValue(sheet)
-
+            writeTextBar(sheet)
         }
     }
 
 
-companion object{
-
-    fun getCellStyle(cell: XSSFCell): XSSFCellStyle{
-
-        return cell.cellStyle
+    companion object{
+        fun getCellStyle(cell: XSSFCell): XSSFCellStyle{
+            return cell.cellStyle
+        }
+        fun getCellStyle(format: MyCellFormat): XSSFCellStyle{
+            return StyleCache.getOrCreateStyle(format)
+        }
     }
 
-    fun getCellStyle(format: MyCellFormat): XSSFCellStyle{
 
-        return StyleCache.getOrCreateStyle(format)
-    }
 }
-
-
-    }
