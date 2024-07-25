@@ -1,7 +1,6 @@
 import org.apache.poi.ss.usermodel.BorderStyle
 import org.apache.poi.ss.usermodel.FillPatternType
 import org.apache.poi.ss.usermodel.IndexedColors
-import org.apache.poi.xssf.usermodel.XSSFFont
 
 class Styles {
     companion object{
@@ -13,7 +12,8 @@ class Styles {
         val FIRST_RANGE_COLOR = IndexedColors.RED.getIndex()
         val SECOND_RANGE_COLOR = IndexedColors.BLUE.getIndex()
         val THIRD_RANGE_COLOR = IndexedColors.YELLOW.getIndex()
-        val FILL_PATTERN_GLOBAL = FillPatternType.FINE_DOTS
+        val FILL_PATTERN_CARDS = FillPatternType.SPARSE_DOTS
+        val FILL_PATTERN_RANGES = FillPatternType.ALT_BARS
         val DEFAULT_COLOR = IndexedColors.WHITE.getIndex()
         val USUAL_STORY_COLOR = IndexedColors.LIGHT_GREEN.getIndex()
         val FIXED_STORY_COLOR = IndexedColors.LIGHT_BLUE.getIndex()
@@ -21,8 +21,8 @@ class Styles {
         val EXPEDITE_STORY_COLOR = IndexedColors.RED.getIndex()
         val TROUBLE_COLOR = DEFAULT_COLOR
         val MODIFICATION_COLOR = DEFAULT_COLOR
-//        val DEFAULT_FONT = wb.createFont()
-
+        val BACKSIDE_TROUBLE_COLOR = IndexedColors.RED.getIndex()
+        val BACKSIDE_PATTERN = FillPatternType.ALT_BARS
         val COLUMN_COUNT = 40
         val ROWS_COUNT = 6000
     }

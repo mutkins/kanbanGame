@@ -17,7 +17,13 @@ abstract class ExcelCard(
     var letterIndex: String = "",
     protected var backgroundColor: Short = Styles.DEFAULT_COLOR
 ) {
-
+    class BackSide(backgroundColor: Short): ExcelCard(backgroundColor=backgroundColor){
+        override fun placeCard(sheet: Sheet, firstRow: Int, firstColumn: Int) {
+            setCoordinates(firstRow,firstColumn)
+            fillCard(sheet)
+            writeOutlineBorder(sheet)
+        }
+    }
     abstract fun placeCard(sheet: Sheet, firstRow: Int, firstColumn: Int)
 
 
@@ -31,7 +37,7 @@ abstract class ExcelCard(
                 val format = MyCellFormat(style)
 //                fillCell(cell, backgroundColor)
                 format.fillForegroundColor = backgroundColor
-                format.fillPattern = Styles.FILL_PATTERN_GLOBAL
+                format.fillPattern = Styles.FILL_PATTERN_CARDS
                 val newStyle = getCellStyle(format)
                 cell.cellStyle = newStyle
 
@@ -70,10 +76,10 @@ abstract class ExcelCard(
 
     protected fun writeRightBarValue(sheet: Sheet){
         val row = sheet.getRow(firstRow)
-        val cell = row.getCell(lastColumn-4)
+        val cell = row.getCell(lastColumn-3)
         cell.setCellValue(rightBar)
         doBoldFont(cell)
-        mergeCells(sheet, firstRow,firstRow, lastColumn-4, lastColumn)
+        mergeCells(sheet, firstRow,firstRow, lastColumn-3, lastColumn)
         doHorizontalAlignment(cell)
 
     }
@@ -140,7 +146,7 @@ abstract class ExcelCard(
         val style: XSSFCellStyle = getCellStyle(cell as XSSFCell)
         val format = MyCellFormat(style)
         format.fillForegroundColor = color
-        format.fillPattern = Styles.FILL_PATTERN_GLOBAL
+        format.fillPattern = Styles.FILL_PATTERN_CARDS
         val newStyle = getCellStyle(format)
         cell.cellStyle = newStyle
     }
@@ -190,7 +196,7 @@ abstract class ExcelCard(
                 format.borderBottom = Styles.RANGE_BORDER
                 format.borderLeft = Styles.RANGE_BORDER
                 format.fillForegroundColor = Styles.FIRST_RANGE_COLOR
-                format.fillPattern = Styles.FILL_PATTERN_GLOBAL
+                format.fillPattern = Styles.FILL_PATTERN_RANGES
                 fillCell(cell, Styles.FIRST_RANGE_COLOR)
                 val newStyle = getCellStyle(format)
                 cell.cellStyle = newStyle
@@ -208,7 +214,7 @@ abstract class ExcelCard(
                 format.borderBottom = Styles.RANGE_BORDER
                 format.borderLeft = Styles.RANGE_BORDER
                 format.fillForegroundColor = Styles.SECOND_RANGE_COLOR
-                format.fillPattern = Styles.FILL_PATTERN_GLOBAL
+                format.fillPattern = Styles.FILL_PATTERN_RANGES
 //                fillCell(cell, Styles.SECOND_RANGE_COLOR)
                 val newStyle = getCellStyle(format)
                 cell.cellStyle = newStyle
@@ -226,7 +232,7 @@ abstract class ExcelCard(
                 format.borderBottom = Styles.RANGE_BORDER
                 format.borderLeft = Styles.RANGE_BORDER
                 format.fillForegroundColor = Styles.THIRD_RANGE_COLOR
-                format.fillPattern = Styles.FILL_PATTERN_GLOBAL
+                format.fillPattern = Styles.FILL_PATTERN_RANGES
 //                fillCell(cell, Styles.THIRD_RANGE_COLOR)
                 val newStyle = getCellStyle(format)
                 cell.cellStyle = newStyle
@@ -280,7 +286,7 @@ abstract class ExcelCard(
         constructor(card: Trouble): this(){
             textBar = card.text
             leftBar = "${card.letterIndex}${card.rate}"
-            rightBar = "${card.dangerScore} угр."
+            rightBar = "угроза: ${card.dangerScore}"
         }
         init {
             backgroundColor = Styles.TROUBLE_COLOR

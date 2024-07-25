@@ -7,11 +7,11 @@ fun main() {
     CardCreator.StoryCreator.Optimization.createCard(16)
     CardCreator.StoryCreator.Expedite.createCard(14)
 
-    CardCreator.TroubleCreator.HarmlessTrouble.createCard(5)
-    CardCreator.TroubleCreator.EasyTrouble.createCard(5)
-    CardCreator.TroubleCreator.SeriousTrouble.createCard(5)
-    CardCreator.TroubleCreator.AwfulTrouble.createCard(5)
-    CardCreator.ModificationCreator.Modific.createCard(5)
+    CardCreator.TroubleCreator.HarmlessTrouble.createCard(29)
+    CardCreator.TroubleCreator.EasyTrouble.createCard(15)
+    CardCreator.TroubleCreator.SeriousTrouble.createCard(15)
+    CardCreator.TroubleCreator.AwfulTrouble.createCard(15)
+    CardCreator.ModificationCreator.Modific.createCard(15)
 
     var sheet = wb.createSheet("S")
     Utils.createRows(sheet)
@@ -85,12 +85,14 @@ fun main() {
         ExcelCard.ExcelModification(story).placeCard(sheet, rownum, columnNum)
     }
 
-    sheet = wb.createSheet("T1")
+    sheet = wb.createSheet("T")
     Utils.createRows(sheet)
     Utils.setColumnsWidth(sheet)
+    val backsideSheet = wb.createSheet("T_BS")
+    Utils.createRows(backsideSheet)
+    Utils.setColumnsWidth(backsideSheet)
     rownum = -10
     columnNum = 0
-    val a = Card.CardHolder.TroubleHolder.stories
     Card.CardHolder.TroubleHolder.stories.forEachIndexed{ index, story ->
 
         if (index % 2 == 0){
@@ -99,7 +101,22 @@ fun main() {
         }
         else columnNum = 18
         ExcelCard.ExcelTrouble(story).placeCard(sheet, rownum, columnNum)
+        ExcelCard.BackSide(Styles.BACKSIDE_TROUBLE_COLOR).placeCard(backsideSheet, rownum, columnNum)
     }
+    sheet = wb.createSheet("B1")
+    Utils.createRows(sheet)
+    Utils.setColumnsWidth(sheet)
+    rownum = -10
+    columnNum = 0
+    for (index in 0..30){
+        if (index % 2 == 0){
+            columnNum = 0
+            rownum += 10
+        }
+        else columnNum = 18
+
+    }
+
 
 
     FileOutputStream("workbook.xlsx").use { fileOut -> wb.write(fileOut)}

@@ -30,7 +30,7 @@ class Data {
             val RANGE: List<Int> = listOf(6,7,8)
         }
         data object Awful{
-            val RANGE: List<Int> = listOf(9,10,11)
+            val RANGE: List<Int> = listOf(10,11,12)
         }
     }
 
