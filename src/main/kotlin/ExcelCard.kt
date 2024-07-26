@@ -1,9 +1,7 @@
-import Utils.wb
 import org.apache.poi.ss.usermodel.*
 import org.apache.poi.ss.util.CellRangeAddress
 import org.apache.poi.xssf.usermodel.XSSFCell
 import org.apache.poi.xssf.usermodel.XSSFCellStyle
-import org.apache.poi.xssf.usermodel.XSSFFont
 
 
 abstract class ExcelCard(
@@ -15,9 +13,10 @@ abstract class ExcelCard(
     var title: String = "",
     var rightBar: String = "",
     var letterIndex: String = "",
-    protected var backgroundColor: Short = Styles.DEFAULT_COLOR
+    protected var backgroundColor: Short = Styles.DEFAULT_COLOR,
+    protected var backgroundPattern: FillPatternType = Styles.DEFAULT_PATTERN
 ) {
-    class BackSide(backgroundColor: Short): ExcelCard(backgroundColor=backgroundColor){
+    class BackSide(backgroundColor: Short, backgroundPattern: FillPatternType): ExcelCard(backgroundColor=backgroundColor, backgroundPattern = backgroundPattern){
         override fun placeCard(sheet: Sheet, firstRow: Int, firstColumn: Int) {
             setCoordinates(firstRow,firstColumn)
             fillCard(sheet)
@@ -37,7 +36,7 @@ abstract class ExcelCard(
                 val format = MyCellFormat(style)
 //                fillCell(cell, backgroundColor)
                 format.fillForegroundColor = backgroundColor
-                format.fillPattern = Styles.FILL_PATTERN_CARDS
+                format.fillPattern = backgroundPattern
                 val newStyle = getCellStyle(format)
                 cell.cellStyle = newStyle
 
@@ -170,6 +169,7 @@ abstract class ExcelCard(
             leftBar = "${story.letterIndex}${story.num}"
             rightBar = "${story.price} $"
             title = story.title
+            backgroundPattern = Styles.FRONTSIDE_CARD_PATTERN
         }
 
         override fun placeCard(sheet: Sheet, firstRow: Int, firstColumn: Int) {
@@ -240,24 +240,25 @@ abstract class ExcelCard(
         }
         class ExcelUsualStory(story: Story.UsualStory):ExcelStory(story as Story){
             init {
-                backgroundColor = Styles.USUAL_STORY_COLOR
+                backgroundColor = Styles.FRONTSIDE_USUAL_STORY_COLOR
+
             }
         }
         class ExcelFixedStory(story: Story.FixedDateStory):ExcelStory(story as Story){
             init {
-                backgroundColor = Styles.FIXED_STORY_COLOR
+                backgroundColor = Styles.FRONTSIDE_FIXED_STORY_COLOR
             }
         }
 
         class ExcelOptimizationStory(story: Story.OptimizationStory):ExcelStory(story as Story){
             init {
-                backgroundColor = Styles.OPTIMIZATION_STORY_COLOR
+                backgroundColor = Styles.FRONTSIDE_OPTIMIZATION_STORY_COLOR
             }
         }
 
         class ExcelExpediteStory(story: Story.ExpediteStory):ExcelStory(story as Story){
             init {
-                backgroundColor = Styles.EXPEDITE_STORY_COLOR
+                backgroundColor = Styles.FRONTSIDE_EXPEDITE_STORY_COLOR
             }
         }
     }
