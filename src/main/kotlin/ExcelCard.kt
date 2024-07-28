@@ -1,7 +1,11 @@
+import Utils.wb
+import org.apache.commons.compress.utils.IOUtils
 import org.apache.poi.ss.usermodel.*
 import org.apache.poi.ss.util.CellRangeAddress
 import org.apache.poi.xssf.usermodel.XSSFCell
 import org.apache.poi.xssf.usermodel.XSSFCellStyle
+import java.io.FileInputStream
+import java.io.InputStream
 
 
 abstract class ExcelCard(
@@ -14,13 +18,33 @@ abstract class ExcelCard(
     var rightBar: String = "",
     var letterIndex: String = "",
     protected var backgroundColor: Short = Styles.DEFAULT_COLOR,
-    protected var backgroundPattern: FillPatternType = Styles.DEFAULT_PATTERN
+    protected var backgroundPattern: FillPatternType = Styles.DEFAULT_PATTERN,
+
 ) {
-    class BackSide(backgroundColor: Short, backgroundPattern: FillPatternType): ExcelCard(backgroundColor=backgroundColor, backgroundPattern = backgroundPattern){
+    class BackSide(backgroundColor: Short, backgroundPattern: FillPatternType, private var backsideImagePath: String = ""): ExcelCard(backgroundColor=backgroundColor, backgroundPattern = backgroundPattern){
+
         override fun placeCard(sheet: Sheet, firstRow: Int, firstColumn: Int) {
             setCoordinates(firstRow,firstColumn)
             fillCard(sheet)
             writeOutlineBorder(sheet)
+            addImage(sheet = sheet)
+        }
+        private fun addImage(sheet: Sheet){
+            if (backsideImagePath != "") {
+                val inputStream = FileInputStream(backsideImagePath)
+                val bytes = IOUtils.toByteArray(inputStream)
+                inputStream.close()
+
+                val pictureIdx = wb.addPicture(bytes, Workbook.PICTURE_TYPE_PNG)
+                val drawing = sheet.createDrawingPatriarch()
+                val anchor: ClientAnchor = wb.creationHelper.createClientAnchor()
+                anchor.setCol1(firstColumn + 4)
+                anchor.setRow1(firstRow + 1)
+                anchor.setCol2(lastColumn - 3)
+                anchor.setRow2(lastRow)
+                val pict = drawing.createPicture(anchor, pictureIdx)
+                pict.resize(1.0) // Меняем размер картинки под ячейку
+            }
         }
     }
     abstract fun placeCard(sheet: Sheet, firstRow: Int, firstColumn: Int)
@@ -149,6 +173,8 @@ abstract class ExcelCard(
         val newStyle = getCellStyle(format)
         cell.cellStyle = newStyle
     }
+
+
 
     abstract class ExcelStory(
         var firstRangeCount: Int = 0,

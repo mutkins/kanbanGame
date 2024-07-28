@@ -102,7 +102,7 @@ fun main() {
         }
         else columnNum = 18
         ExcelCard.ExcelModification(story).placeCard(sheet, rownum, columnNum)
-        ExcelCard.BackSide(Styles.BACKSIDE_MODOFICATION_COLOR, Styles.BACKSIDE_PATTERN).placeCard(backsideSheet, rownum, columnNum)
+        ExcelCard.BackSide(Styles.BACKSIDE_MODOFICATION_COLOR, Styles.BACKSIDE_PATTERN, backsideImagePath = "src/main/kotlin/new message.png").placeCard(backsideSheet, rownum, columnNum)
     }
 
     sheet = wb.createSheet("T")
@@ -121,7 +121,7 @@ fun main() {
         }
         else columnNum = 18
         ExcelCard.ExcelTrouble(story).placeCard(sheet, rownum, columnNum)
-        ExcelCard.BackSide(Styles.BACKSIDE_TROUBLE_COLOR, Styles.BACKSIDE_PATTERN).placeCard(backsideSheet, rownum, columnNum)
+        ExcelCard.BackSide(Styles.BACKSIDE_TROUBLE_COLOR, Styles.BACKSIDE_PATTERN, backsideImagePath = "src/main/kotlin/error_icon.png").placeCard(backsideSheet, rownum, columnNum)
     }
 
 
